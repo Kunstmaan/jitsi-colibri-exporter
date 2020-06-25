@@ -252,7 +252,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(c.endpoints_sending_video, prometheus.GaugeValue, jsonData.EndpointsSendingVideo)
 		ch <- prometheus.MustNewConstMetric(c.conferences, prometheus.GaugeValue, jsonData.Conferences)
 		ch <- prometheus.MustNewConstMetric(c.participants, prometheus.GaugeValue, jsonData.Participants)
-		ch <- prometheus.MustNewConstMetric(c.videostreams, prometheus.GaugeValue, jsonData.Videochannels)
+		ch <- prometheus.MustNewConstMetric(c.videostreams, prometheus.GaugeValue, jsonData.Videostreams)
 		ch <- prometheus.MustNewConstMetric(c.total_loss_controlled_participant_seconds, prometheus.CounterValue, jsonData.TotalLossControlledParticipantSeconds)
 		ch <- prometheus.MustNewConstMetric(c.total_loss_limited_participant_seconds, prometheus.CounterValue, jsonData.TotalLossLimitedParticipantSeconds)
 		ch <- prometheus.MustNewConstMetric(c.total_loss_degraded_participant_seconds, prometheus.CounterValue, jsonData.TotalLossDegradedParticipantSeconds)
