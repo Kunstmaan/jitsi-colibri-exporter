@@ -1,4 +1,4 @@
-module github.com/symptog/jitsi-colibri-exporter
+module github.com/kunstmaan/jitsi-colibri-exporter
 
 go 1.14
 

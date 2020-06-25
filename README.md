@@ -24,7 +24,7 @@ In `/etc/jitsi/videobridge/config`:
 # Install
 
 ```
-go get github.com/symptog/jitsi-colibri-exporter
+go get github.com/kunstmaan/jitsi-colibri-exporter
 ```
 
 # Run
@@ -165,6 +165,12 @@ jitsi_colibri_videochannels 0
 # HELP jitsi_colibri_videostreams videostreams
 # TYPE jitsi_colibri_videostreams gauge
 jitsi_colibri_videostreams 0
+# HELP jitsi_colibri_endpoints_sending_audio endpoints_sending_audio
+# TYPE jitsi_colibri_endpoints_sending_audio gauge
+jitsi_colibri_endpoints_sending_audio 0
+# HELP jitsi_colibri_endpoints_sending_video endpoints_sending_video
+# TYPE jitsi_colibri_endpoints_sending_video gauge
+jitsi_colibri_endpoints_sending_video 0
 ```
 
 # Docker container

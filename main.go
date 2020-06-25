@@ -3,11 +3,11 @@ package main
 import (
 	"crypto/tls"
 	"flag"
-	"github.com/symptog/jitsi-colibri-exporter/collector"
+	"github.com/kunstmaan/jitsi-colibri-exporter/collector"
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -20,7 +20,6 @@ var (
 	ColibriUrl = flag.String("colibri.url", "http://127.0.0.1:8080/colibri/stats", "Colibiri URL")
 
 	httpClient *http.Client
-
 )
 
 func init() {
