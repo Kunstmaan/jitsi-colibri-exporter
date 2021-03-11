@@ -171,6 +171,24 @@ jitsi_colibri_endpoints_sending_audio 0
 # HELP jitsi_colibri_endpoints_sending_video endpoints_sending_video
 # TYPE jitsi_colibri_endpoints_sending_video gauge
 jitsi_colibri_endpoints_sending_video 0
+# HELP jitsi_colibri_octo_send_bitrate
+# TYPE jitsi_colibri_octo_send_bitrate gauge
+jitsi_colibri_octo_send_bitrate 0
+# HELP jitsi_colibri_octo_receive_bitrate
+# TYPE jitsi_colibri_octo_receive_bitrate gauge
+jitsi_colibri_octo_receive_bitrate 0
+# HELP jitsi_colibri_octo_conferences
+# TYPE jitsi_colibri_octo_conferences gauge
+jitsi_colibri_octo_conferences 0
+# HELP jitsi_colibri_octo_endpoints
+# TYPE jitsi_colibri_octo_endpoints gauge
+jitsi_colibri_octo_endpoints 0
+# HELP jitsi_colibri_octo_send_packet_rate
+# TYPE jitsi_colibri_octo_send_packet_rate gauge
+jitsi_colibri_octo_send_packet_rate 0
+# HELP jitsi_colibri_octo_receive_packet_rate
+# TYPE jitsi_colibri_octo_receive_packet_rate gauge
+jitsi_colibri_octo_receive_packet_rate 0
 ```
 
 # Docker container

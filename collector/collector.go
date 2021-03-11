@@ -43,6 +43,12 @@ type ColibriMetrics struct {
 	TotalDataChannelMessagesSent          float64  `json:"total_data_channel_messages_sent"`
 	TotalColibriWebsocketMessagesReceived float64  `json:"total_colibri_web_socket_messages_received"`
 	TotalColibriWebsocketMessagesSent     float64  `json:"total_colibri_web_socket_messages_sent"`
+	OctoSendBitRate                       float64  `json:"octo_send_bitrate"`
+	OctoReceiveBitRate                    float64  `json:"octo_receive_bitrate"`
+	OctoConferences                       float64  `json:"octo_conferences"`
+	OctoEndpoints                         float64  `json:"octo_endpoints"`
+	OctoSendPacketRate                    float64  `json:"octo_send_packet_rate"`
+	OctoReceivePacketRate                 float64  `json:"octo_receive_packet_rate"`
 }
 
 type Collector struct {
@@ -84,6 +90,12 @@ type Collector struct {
 	total_data_channel_messages_sent           *prometheus.Desc
 	total_colibri_web_socket_messages_received *prometheus.Desc
 	total_colibri_web_socket_messages_sent     *prometheus.Desc
+	octo_send_bitrate                          *prometheus.Desc
+	octo_receive_bitrate                       *prometheus.Desc
+	octo_conferences                           *prometheus.Desc
+	octo_endpoints                             *prometheus.Desc
+	octo_send_packet_rate                      *prometheus.Desc
+	octo_receive_packet_rate                   *prometheus.Desc
 }
 
 func New(client *http.Client, target string) *Collector {
@@ -91,28 +103,28 @@ func New(client *http.Client, target string) *Collector {
 		client: client,
 		target: target,
 
-		up:                             prometheus.NewDesc("jitsi_colibri_up", "Whether the Azure ServiceBus scrape was successful", nil, nil),
-		threads:                        prometheus.NewDesc("jitsi_colibri_threads", "threads", nil, nil),
-		used_memory:                    prometheus.NewDesc("jitsi_colibri_used_memory", "used_memory", nil, nil),
-		total_memory:                   prometheus.NewDesc("jitsi_colibri_total_memory", "total_memory", nil, nil),
-		cpu_usage:                      prometheus.NewDesc("jitsi_colibri_cpu_usage", "cpu_usage", nil, nil),
-		bit_rate_download:              prometheus.NewDesc("jitsi_colibri_bit_rate_download", "bit_rate_download", nil, nil),
-		bit_rate_upload:                prometheus.NewDesc("jitsi_colibri_bit_rate_upload", "bit_rate_upload", nil, nil),
-		packet_rate_download:           prometheus.NewDesc("jitsi_colibri_packet_rate_download", "packet_rate_download", nil, nil),
-		packet_rate_upload:             prometheus.NewDesc("jitsi_colibri_packet_rate_upload", "packet_rate_upload", nil, nil),
-		loss_rate_download:             prometheus.NewDesc("jitsi_colibri_loss_rate_download", "loss_rate_download", nil, nil),
-		loss_rate_upload:               prometheus.NewDesc("jitsi_colibri_loss_rate_upload", "loss_rate_upload", nil, nil),
-		rtp_loss:                       prometheus.NewDesc("jitsi_colibri_rtp_loss", "rtp_loss", nil, nil),
-		jitter_aggregate:               prometheus.NewDesc("jitsi_colibri_jitter_aggregate", "jitter_aggregate", nil, nil),
-		rtt_aggregate:                  prometheus.NewDesc("jitsi_colibri_rtt_aggregate", "rtt_aggregate", nil, nil),
-		largest_conference:             prometheus.NewDesc("jitsi_colibri_largest_conference", "largest_conference", nil, nil),
-		audiochannels:                  prometheus.NewDesc("jitsi_colibri_audiochannels", "audiochannels", nil, nil),
-		videochannels:                  prometheus.NewDesc("jitsi_colibri_videochannels", "videochannels", nil, nil),
-		endpoints_sending_audio:        prometheus.NewDesc("jitsi_colibri_endpoints_sending_audio", "endpoints_sending_audio", nil, nil),
-		endpoints_sending_video:        prometheus.NewDesc("jitsi_colibri_endpoints_sending_video", "endpoints_sending_video", nil, nil),
-		conferences:                    prometheus.NewDesc("jitsi_colibri_conferences", "conferences", nil, nil),
-		participants:                   prometheus.NewDesc("jitsi_colibri_participants", "participants", nil, nil),
-		videostreams:                   prometheus.NewDesc("jitsi_colibri_videostreams", "videostreams", nil, nil),
+		up:                                         prometheus.NewDesc("jitsi_colibri_up", "Whether the Azure ServiceBus scrape was successful", nil, nil),
+		threads:                                    prometheus.NewDesc("jitsi_colibri_threads", "threads", nil, nil),
+		used_memory:                                prometheus.NewDesc("jitsi_colibri_used_memory", "used_memory", nil, nil),
+		total_memory:                               prometheus.NewDesc("jitsi_colibri_total_memory", "total_memory", nil, nil),
+		cpu_usage:                                  prometheus.NewDesc("jitsi_colibri_cpu_usage", "cpu_usage", nil, nil),
+		bit_rate_download:                          prometheus.NewDesc("jitsi_colibri_bit_rate_download", "bit_rate_download", nil, nil),
+		bit_rate_upload:                            prometheus.NewDesc("jitsi_colibri_bit_rate_upload", "bit_rate_upload", nil, nil),
+		packet_rate_download:                       prometheus.NewDesc("jitsi_colibri_packet_rate_download", "packet_rate_download", nil, nil),
+		packet_rate_upload:                         prometheus.NewDesc("jitsi_colibri_packet_rate_upload", "packet_rate_upload", nil, nil),
+		loss_rate_download:                         prometheus.NewDesc("jitsi_colibri_loss_rate_download", "loss_rate_download", nil, nil),
+		loss_rate_upload:                           prometheus.NewDesc("jitsi_colibri_loss_rate_upload", "loss_rate_upload", nil, nil),
+		rtp_loss:                                   prometheus.NewDesc("jitsi_colibri_rtp_loss", "rtp_loss", nil, nil),
+		jitter_aggregate:                           prometheus.NewDesc("jitsi_colibri_jitter_aggregate", "jitter_aggregate", nil, nil),
+		rtt_aggregate:                              prometheus.NewDesc("jitsi_colibri_rtt_aggregate", "rtt_aggregate", nil, nil),
+		largest_conference:                         prometheus.NewDesc("jitsi_colibri_largest_conference", "largest_conference", nil, nil),
+		audiochannels:                              prometheus.NewDesc("jitsi_colibri_audiochannels", "audiochannels", nil, nil),
+		videochannels:                              prometheus.NewDesc("jitsi_colibri_videochannels", "videochannels", nil, nil),
+		endpoints_sending_audio:                    prometheus.NewDesc("jitsi_colibri_endpoints_sending_audio", "endpoints_sending_audio", nil, nil),
+		endpoints_sending_video:                    prometheus.NewDesc("jitsi_colibri_endpoints_sending_video", "endpoints_sending_video", nil, nil),
+		conferences:                                prometheus.NewDesc("jitsi_colibri_conferences", "conferences", nil, nil),
+		participants:                               prometheus.NewDesc("jitsi_colibri_participants", "participants", nil, nil),
+		videostreams:                               prometheus.NewDesc("jitsi_colibri_videostreams", "videostreams", nil, nil),
 		total_loss_controlled_participant_seconds:  prometheus.NewDesc("jitsi_colibri_total_loss_controlled_participant_seconds", "total_loss_controlled_participant_seconds", nil, nil),
 		total_loss_limited_participant_seconds:     prometheus.NewDesc("jitsi_colibri_total_loss_limited_participant_seconds", "total_loss_limited_participant_seconds", nil, nil),
 		total_loss_degraded_participant_seconds:    prometheus.NewDesc("jitsi_colibri_total_loss_degraded_participant_seconds", "total_loss_degraded_participant_seconds", nil, nil),
@@ -125,6 +137,12 @@ func New(client *http.Client, target string) *Collector {
 		total_colibri_web_socket_messages_received: prometheus.NewDesc("jitsi_colibri_total_colibri_web_socket_messages_received", "total_colibri_web_socket_messages_received", nil, nil),
 		total_colibri_web_socket_messages_sent:     prometheus.NewDesc("jitsi_colibri_total_colibri_web_socket_messages_sent", "total_colibri_web_socket_messages_sent", nil, nil),
 		conference_sizes:                           prometheus.NewDesc("jitsi_colibri_conference_sizes", "conference_sizes", nil, nil),
+		octo_send_bitrate:                          prometheus.NewDesc("jitsi_colibri_octo_send_bitrate", "octo_send_bitrate", nil, nil),
+		octo_receive_bitrate:                       prometheus.NewDesc("jitsi_colibri_octo_receive_bitrate", "octo_receive_bitrate", nil, nil),
+		octo_conferences:                           prometheus.NewDesc("jitsi_colibri_octo_conferences", "octo_conferences", nil, nil),
+		octo_endpoints:                             prometheus.NewDesc("jitsi_colibri_octo_endpoints", "octo_endpoints", nil, nil),
+		octo_send_packet_rate:                      prometheus.NewDesc("jitsi_colibri_octo_send_packet_rate", "octo_send_packet_rate", nil, nil),
+		octo_receive_packet_rate:                   prometheus.NewDesc("jitsi_colibri_octo_receive_packet_rate", "octo_receive_packet_rate", nil, nil),
 	}
 }
 
@@ -163,6 +181,12 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.total_data_channel_messages_sent
 	ch <- c.total_colibri_web_socket_messages_received
 	ch <- c.total_colibri_web_socket_messages_sent
+	ch <- c.octo_send_bitrate
+	ch <- c.octo_receive_bitrate
+	ch <- c.octo_conferences
+	ch <- c.octo_endpoints
+	ch <- c.octo_send_packet_rate
+	ch <- c.octo_receive_packet_rate
 }
 
 func probeColibri(client *http.Client, target string) (ColibriMetrics, error) {
@@ -264,6 +288,12 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(c.total_data_channel_messages_sent, prometheus.CounterValue, jsonData.TotalDataChannelMessagesSent)
 		ch <- prometheus.MustNewConstMetric(c.total_colibri_web_socket_messages_received, prometheus.CounterValue, jsonData.TotalColibriWebsocketMessagesReceived)
 		ch <- prometheus.MustNewConstMetric(c.total_colibri_web_socket_messages_sent, prometheus.CounterValue, jsonData.TotalColibriWebsocketMessagesSent)
+		ch <- prometheus.MustNewConstMetric(c.octo_send_bitrate, prometheus.GaugeValue, jsonData.OctoSendBitRate)
+		ch <- prometheus.MustNewConstMetric(c.octo_receive_bitrate, prometheus.GaugeValue, jsonData.OctoReceiveBitRate)
+		ch <- prometheus.MustNewConstMetric(c.octo_conferences, prometheus.GaugeValue, jsonData.OctoConferences)
+		ch <- prometheus.MustNewConstMetric(c.octo_endpoints, prometheus.GaugeValue, jsonData.OctoEndpoints)
+		ch <- prometheus.MustNewConstMetric(c.octo_send_packet_rate, prometheus.GaugeValue, jsonData.OctoSendPacketRate)
+		ch <- prometheus.MustNewConstMetric(c.octo_receive_packet_rate, prometheus.GaugeValue, jsonData.OctoReceivePacketRate)
 
 		var combinedConferenceSizes = make(map[float64]uint64)
 		var combinedSum uint64
